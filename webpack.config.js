@@ -1,10 +1,14 @@
 const path = require('path');
 module.exports = {
-  devtool: 'cheap-module-eval-source-map',
-  entry: './src/component/index.js',
+  entry: './src/component/index.ts',
   output: {
     path: path.resolve(__dirname, '../dist'), // 输出的路径
-    filename: '[name]_[hash:8].js'  // 打包后文件
+    filename: 'react-amap.js',
+    library: 'ReactAMAP',
+    libraryTarget: 'umd'
+  },
+  resolve: {
+    extensions: ['*', '.js', '.jsx', '.ts', '.tsx']
   },
   module: {
     rules: [
@@ -19,6 +23,11 @@ module.exports = {
         loader: 'eslint-loader',
         exclude: /node_modules/,
       },
-    ]
+      {
+        test: /\.(ts|tsx)$/,
+        loader: 'ts-loader',
+        exclude: /node_modules/
+      },
+    ],
   },
 }

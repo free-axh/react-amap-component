@@ -3,3 +3,6 @@ bin
 dist
 node_modules
 src
+lib
+webpack.config.js
+webpack.test.config.js
