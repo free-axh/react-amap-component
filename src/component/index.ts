@@ -1,5 +1,7 @@
 import Map from './map/index';
+import Maker from './marker/index'
 
 export {
-  Map
+  Map,
+  Maker,
 }

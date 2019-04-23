@@ -1,8 +1,8 @@
 const path = require('path');
 module.exports = {
-  entry: './src/component/index.ts',
+  entry: './src/component/index.js',
   output: {
-    path: path.resolve(__dirname, '../dist'), // 输出的路径
+    path: path.resolve(__dirname, './dist'), // 输出的路径
     filename: 'react-amap.js',
     library: 'ReactAMAP',
     libraryTarget: 'umd'

@@ -6,3 +6,4 @@ src
 lib
 webpack.config.js
 webpack.test.config.js
+gulpfile.js
