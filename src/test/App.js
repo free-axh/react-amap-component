@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Map, Maker,Line } from '../component/index';
+import { Map, Maker,Line,InfoWindow } from '../component/index';
 
 export default class App extends Component {
   render() {
@@ -23,6 +23,7 @@ export default class App extends Component {
                 mapZoom='18'
                 mapCenter={[106.512395, 29.533838]}
               />
+              <InfoWindow />
             </Map>
           </div>
         </div>
