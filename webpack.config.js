@@ -1,6 +1,6 @@
 const path = require('path');
 module.exports = {
-  entry: './src/component/index.js',
+  entry: './src/component/index.ts',
   output: {
     path: path.resolve(__dirname, './dist'), // 输出的路径
     filename: 'react-amap.js',
@@ -27,6 +27,10 @@ module.exports = {
         test: /\.(ts|tsx)$/,
         loader: 'ts-loader',
         exclude: /node_modules/
+      },
+      {
+        test: /\.less$/,
+        use: ['style-loader', 'css-loader', 'less-loader']
       },
     ],
   },
