@@ -7,5 +7,5 @@ export {
   Map,
   Maker,
   Line,
-  InfoWindow
-}
+  InfoWindow,
+};

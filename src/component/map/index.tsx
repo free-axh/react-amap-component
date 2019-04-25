@@ -1,42 +1,35 @@
 import * as React from 'react';
-import { PositionProperty } from "csstype";
+// import { PositionProperty } from "csstype";
 import APILoader from '../utils/mapLoader';
-import "../utils/amap";
+import './mapCore.less';
 
-const Children = React.Children;
+// const Children = React.Children;
 
 interface IBaseMap {
   key: string,
   config?: object,
   option?: object,
+  amapFinish?: Function
 }
 
 interface IBaseMapState{
   mapLoaded:boolean
 }
 
-const styles = {
-  wrapperStyle: {
-    width: '100%',
-    height: '100%',
-    position: 'relative' as PositionProperty,
-  },
-  mapArea: {
-    width: '100%',
-    height: '100%',
-  },
-};
-
 class BaseMap extends React.Component<IBaseMap, IBaseMapState> {
-  mapWrapper:HTMLDivElement
-  map:AMap.Map
+  mapWrapper:HTMLDivElement = null;
+
+  map:AMap.Map = null;
 
   constructor(props:IBaseMap) {
     super(props);
-    const { config, option } = props;
+    const { config, option, amapFinish } = props;
     const newConfig = Object.assign({}, config);
     new APILoader(newConfig).getMainPromise().then(() => {
-      this.map =new AMap.Map(this.mapWrapper, option);
+      this.map = new AMap.Map(this.mapWrapper, option);
+      if (amapFinish) {
+        amapFinish();
+      }
       this.map.on('complete', () => {
         this.mapComplete();
       });
@@ -51,22 +44,22 @@ class BaseMap extends React.Component<IBaseMap, IBaseMapState> {
   }
 
   renderChildren() {
-    return Children.map(this.props.children, (child) => {
+    return React.Children.map(this.props.children, (child) => {
       if (child) {
-        return React.cloneElement(child as React.ReactElement, {
-          _map_: this.map
-        })
+        const newChild = child as React.ReactElement;
+        return React.cloneElement(newChild, {
+          _map_: this.map,
+        });
       }
-      return child
-    })
+      return child;
+    });
   }
 
   render() {
     const { mapLoaded } = this.state;
     return (
-      <div style={styles.wrapperStyle}>
-        <p>343434343434343434343434</p>
-        <div ref={((div) => { this.mapWrapper = div; })} style={styles.mapArea} />
+      <div className="map-wrapperStyle">
+        <div ref={((div) => { this.mapWrapper = div; })} className="map-area" />
         <div>{ mapLoaded ? this.renderChildren() : null }</div>
       </div>
     );

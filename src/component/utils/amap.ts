@@ -5,6 +5,10 @@
  * @file Type definitions for AMap
  */
 
+declare module "AMap" {
+  export = AMap;
+}
+
 declare module AMap {
     /**
      * 此对象用于表示地图、覆盖物、叠加层上的各种鼠标事件返回，包含以下字段：
@@ -852,7 +856,8 @@ declare module AMap {
   
       /**获取用户自定义属性**/
       getExtData(): any;
-  
+      /**绑定事件**/
+      on(type: string, caller: any): void;
   
     }
     /** MarkerShapeOptions **/

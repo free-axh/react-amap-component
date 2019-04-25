@@ -5,7 +5,7 @@ import * as React from 'react';
  */
 interface IMarkerProps {
   _map_: AMap.Map,
-  option: IOptions,
+  option: AMap.MarkerOptions,
   fitView: boolean,
   moving: boolean,
 }
@@ -19,46 +19,36 @@ interface IMarkerState {
 }
 
 /**
- * props数据option数据类型定义
+ * 存储点标记数据类型
  */
-interface IOptions {
-  position?: Array<number>,
-  icon?: string,
-  offset?: Array<number>,
-  angle?: number,
-}
-
-/**
- * 点标记数据类型定义
- */
-interface IMarkerOptions {
-  position?: AMap.LngLat,
-  icon?: string,
-  offset?: AMap.Pixel,
-  angle?: number,
+interface IMarkerData {
+  position: AMap.LngLat,
 }
 
 class Marker extends React.Component<IMarkerProps, IMarkerState> {
-  map: AMap.Map
-  marker: AMap.Marker
-  markerData: Array<Array<number>>
+  map: AMap.Map = null;
+
+  marker: AMap.Marker = null;
+
+  markerData:Array<IMarkerData> = [];
 
   constructor(props:IMarkerProps) {
     super(props);
     this.map = props._map_;
     const { option, fitView, moving } = props;
     this.state = {
-      moving: moving === undefined ? false : moving,
+      moving: moving === undefined ? true : moving,
       fitView: fitView === undefined ? true : fitView,
-    }
-    if (option !== undefined) {
+    };
+
+    if (!this.isValidation(option)) {
       this.createMarker(option);
     }
   }
 
   componentWillReceiveProps(nextProps:IMarkerProps) {
     const { option } = nextProps;
-    if (option === undefined) {
+    if (this.isValidation(option)) {
       return;
     }
     if (this.marker === null) {
@@ -71,11 +61,11 @@ class Marker extends React.Component<IMarkerProps, IMarkerState> {
   /**
    * 判断点标记是否达到可移动或跳点的条件
    * this.markerData数据长度等于2满足条件
-   * @param option 
+   * @param option
    */
-  markerStateType(option:IOptions) {
+  markerStateType(option:AMap.MarkerOptions) {
     const { position } = option;
-    this.markerData.push(position);
+    this.markerData.push({ position });
     if (this.markerData.length === 2) {
       const { moving } = this.state;
       if (moving) {
@@ -88,11 +78,11 @@ class Marker extends React.Component<IMarkerProps, IMarkerState> {
 
   /**
    * 点标记跳点
-   * @param option 
+   * @param option
    */
   markerJump() {
-    const position = this.markerData[1];
-    this.marker.setPosition(new AMap.LngLat(position[0], position[1]));
+    const data = this.markerData[1];
+    this.marker.setPosition(data.position);
     this.markerData.splice(0, 1);
     if (this.markerData.length >= 2) {
       this.markerJump();
@@ -101,44 +91,44 @@ class Marker extends React.Component<IMarkerProps, IMarkerState> {
 
   /**
    * 点标记平滑移动
-   * @param option 
+   * @param option
    */
   markerMoving() {
-    const position = this.markerData[1];
-    this.marker.moveTo(new AMap.LngLat(position[0], position[1]), 80, () => {
+    const data = this.markerData[1];
+    this.marker.moveTo(data.position, 80, (k:any) => k);
+    this.marker.on('moveend', () => {
       this.markerData.splice(0, 1);
       if (this.markerData.length >= 2) {
         this.markerMoving();
       }
     });
   }
-  
+
   /**
    * 创建点标记
-   * @param option 
+   * @param option
    */
-  createMarker(option:IOptions) {
+  createMarker(option:AMap.MarkerOptions) {
     const { fitView } = this.state;
-    const { position, icon, offset, angle } = option;
-    const config:IMarkerOptions = {};
-    if (position === undefined) { config.position = new AMap.LngLat(position[0], position[1]) };
-    if (icon === undefined) { config.icon = icon };
-    if (offset === undefined) { config.offset = new AMap.Pixel(offset[0], offset[1]) };
-    if (angle === undefined) { config.angle = angle };
-    this.marker = new AMap.Marker(config);
+    const { position } = option;
+    const config = { position };
+    this.marker = new AMap.Marker(option);
     this.marker.setMap(this.map);
     if (fitView) {
-      this.map.setCenter(new AMap.LngLat(position[0], position[1]));
+      this.map.setCenter(option.position);
     }
-    this.markerData.push(position);
+    this.markerData.push(config);
   }
 
-  
+  /**
+   * 判断数据是否为null或者undefined
+   */
+  isValidation(option:AMap.MarkerOptions) {
+    return option === null || option === undefined;
+  }
 
-  render() {
-    return (
-      <div />
-    );
+  render():null {
+    return null;
   }
 }
 

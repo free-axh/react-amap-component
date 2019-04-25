@@ -1,12 +1,8 @@
 const DEFAULT_CONFIG = {
   version: '1.4.0',
   hostAndPath: 'webapi.amap.com/maps',
-  key: '59ba5e8427f215f33f359b196119a1e2',
-}
-
-interface IMapLoader {
-  config?: IConfig,
-}
+  key: '6b953aec395d345fd37e1b5434d587a9',
+};
 
 interface IConfig {
   hostAndPath: string,
@@ -14,8 +10,11 @@ interface IConfig {
   key: string,
 }
 
-export default class MapLoader implements IMapLoader {
+interface IMapLoader {
+  config?: IConfig,
+}
 
+export default class MapLoader implements IMapLoader {
   config:IConfig
 
   constructor(props:IMapLoader) {
@@ -25,11 +24,10 @@ export default class MapLoader implements IMapLoader {
 
   getScriptSrc() {
     const { hostAndPath, version, key } = this.config;
-    let protocol = window.location.protocol;
+    let { protocol } = window.location;
     if (protocol.indexOf(':') === -1) {
       protocol += ':';
     }
-    console.log(protocol);
     return `${protocol}//${hostAndPath}?v=${version}&key=${key}`;
   }
 
@@ -44,13 +42,12 @@ export default class MapLoader implements IMapLoader {
 
   getMainPromise() {
     const script = this.buildScriptTag(this.getScriptSrc());
-    const p = new Promise(resolve => {
+    const p = new Promise((resolve) => {
       script.onload = () => {
-        resolve()
-      }
-    })
+        resolve();
+      };
+    });
     document.body.appendChild(script);
     return p;
   }
-
 }

@@ -2,8 +2,8 @@ webpack
 bin
 dist
 node_modules
-src
 lib
+src/test
 webpack.config.js
 webpack.test.config.js
 gulpfile.js

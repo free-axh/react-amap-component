@@ -1,5 +1,5 @@
 {
-  "parser": "babel-eslint",
+  "parser": "typescript-eslint-parser",
   "extends": "airbnb",
   "env": {
     "browser": true,
@@ -14,7 +14,8 @@
     }
   },
   "plugins": [
-    "react"
+    "react",
+    "typescript"
   ],
   "rules": {
     "react/jsx-no-bind": [
@@ -27,6 +28,11 @@
     ],
     "import/no-extraneous-dependencies": "off",
     "react/jsx-filename-extension": "off",
-    "react/prefer-stateless-function": "off"
+    "react/prefer-stateless-function": "off",
+    "import/no-unresolved": "off",
+    "no-undef": "off",
+    "class-methods-use-this": "off",
+    "no-underscore-dangle": "off",
+    "react/destructuring-assignment": "off"
   }
 }
