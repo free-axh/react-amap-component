@@ -69,10 +69,8 @@ class Line extends React.Component<ILine, { [index: string]: any }> {
     if (mapCenter) this.map.setCenter(new AMap.LngLat(mapCenter[0], mapCenter[1]));
   }
 
-  render() {
-    return (
-      <div />
-    );
+  render(): null {
+    return null;
   }
 }
 
