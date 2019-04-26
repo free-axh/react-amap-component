@@ -514,7 +514,7 @@ declare module AMap {
        * 根据地图上添加的覆盖物分布情况, 自动缩放地图到合适的视野级别,
        * 参数overlayList默认为当前地图上添加的所有覆盖物图层
        * */
-      setFitView(overlayList: Array<any>): void;
+      setFitView(overlayList?: Array<any>): void;
   
       /**删除地图上所有的覆盖物**/
       clearMap(): void;
