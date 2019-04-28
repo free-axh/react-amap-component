@@ -8,7 +8,8 @@ interface IMarkerProps {
   options: Array<IOptions>,
   fitView?: boolean,
   moving?: boolean,
-  clearMarker?: Array<string> | boolean
+  clearMarker?: Array<string> | boolean,
+  latestPoints?: Array<string>
 }
 
 /**
@@ -33,7 +34,8 @@ class Markers extends React.Component<IMarkerProps, IMarkerState> {
   constructor(props:IMarkerProps) {
     super(props);
     this.map = props._map_;
-    const { options, moving } = props;
+    const { options, moving, clearMarker } = props;
+    this.amapClearMarker(clearMarker);
     this.state = {
       moving: moving === undefined ? true : moving,
     };
@@ -44,7 +46,9 @@ class Markers extends React.Component<IMarkerProps, IMarkerState> {
   }
 
   componentWillReceiveProps(nextProps:IMarkerProps) {
-    const { options } = nextProps;
+    const { options, clearMarker, latestPoints } = nextProps;
+    this.amapClearMarker(clearMarker);
+    this.amapMarkerPoint(latestPoints);
     if (this.isValidation(options)) {
       return;
     }
@@ -139,6 +143,43 @@ class Markers extends React.Component<IMarkerProps, IMarkerState> {
    */
   isValidation(options:Array<IOptions>) {
     return options === null || options === undefined;
+  }
+
+  /**
+   * 清空地图上的标注点
+   */
+  amapClearMarker(flag:Array<string> | boolean) {
+    if (typeof flag === 'boolean' && flag) {
+      this.map.clearMap();
+    }
+    if (flag instanceof Array) {
+      const markers = [];
+      for (let i = 0; i < flag.length; i += 1) {
+        const key = flag[i];
+        const marker = this.markers.get(key);
+        markers.push(marker);
+        this.markers.delete(key);
+        this.markersData.delete(key);
+      }
+      this.map.remove(markers);
+    }
+  }
+
+  /**
+   * 指定key进行最新点跳转
+   */
+  amapMarkerPoint(keys: Array<string>) {
+    if (keys instanceof Array) {
+      for (let i = 0; i < keys.length; i += 1) {
+        const key = keys[i];
+        const marker = this.markers.get(key);
+        const datas = this.markersData.get(key);
+        this.markersData.delete(key);
+        const data = datas[-1];
+        marker.setPosition(data.position);
+        this.markersData.set(key, [data]);
+      }
+    }
   }
 
   render():null {
